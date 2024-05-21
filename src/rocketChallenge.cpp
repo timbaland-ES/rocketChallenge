@@ -20,21 +20,17 @@ public:
 private:
 
 	float rPosition = 0.0f;
-	float rVelocity = 0.0f;
-	float rAcceleration = 0.0f;
+	//float rVelocity = 0.0f;
 
 	float rSectionWidth;
 	std::list<int> listSection;
 
 	bool rHasCollided = false;
 	bool rResetGame = false;
-
 	int nAttemptCount = 0;
-	int nCrashCount = 0;
-	int nMaxCrachCount = 0;
 
 
-protected:
+public:
 	// Called by olcConsoleGameEngine
 	virtual bool OnUserCreate()
 	{
@@ -55,33 +51,27 @@ protected:
 			rAcceleration = 0.0f;
 			rVelocity = 0.0f;
 			rPosition = ScreenHeight() / 2.0f;
-			nCrashCount = 0;
 			nAttemptCount++;
 		}
 
 		// Game
 		if (rHasCollided)
 		{
-			bResetGame = true;
+			rResetGame = true;
 		}
 		else
 		{
-			if (GetKey(olc::Key::SPACE).bPressed && rVelocity >= rGravity / 10.0f)
+			if (GetKey(olc::Key::UP).bPressed)
 			{
-				rAcceleration = 0.0f;
-				nCrashCount++;
-				if (nCrashCount > nMaxCrashCount)
-					nMaxCrashCount = nCrashCount;
+				rPosition += 5;
 			}
-			else
-				rAcceleration += rGravity * fElapsedTime;
 
-			if (rAcceleration >= rGravity)
-				rAcceleration = rGravity;
+			if (GetKey(olc::Key::DOWN).bPressed)
+			{
+				rPosition -= 5;
+			}
 
-			rVelocity += rAcceleration * fElapsedTime;
-			rPosition += rVelocity * fElapsedTime;
-			rLevelPosition += 14.0f * 8.0f * fElapsedTime;
+			rLevelPosition += 14.0f * fElapsedTime;
 
 			if (rLevelPosition > fSectionWidth)
 			{
@@ -92,7 +82,7 @@ protected:
 				listSection.push_back(i);
 			}
 
-			// Display
+			// Display Section
 			FillRect(0, 0, ScreenWidth(), ScreenHeight(), olc::BLACK);
 
 			// Draw Sections
@@ -107,7 +97,7 @@ protected:
 				nSection++;
 			}
 
-			int nRocketX = (int)(ScreenWidth() / 3.0f);
+			//int nRocketX = (int)(ScreenWidth() / 3.0f);
 
             // Collision detection
 
@@ -141,7 +131,6 @@ protected:
 
 int main()
 {
-	
 	RocketChallenge game;
 	if (game.Construct(640, 300, 2, 2))
         game.Start();
