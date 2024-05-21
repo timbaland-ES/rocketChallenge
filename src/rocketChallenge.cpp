@@ -22,7 +22,6 @@ private:
 	float rPosition = 0.0f;
 	float rVelocity = 0.0f;
 	float rAcceleration = 0.0f;
-	float rPosition = 0.0f;
 
 	float rSectionWidth;
 	std::list<int> listSection;
@@ -53,9 +52,9 @@ protected:
 			rHasCollided = false;
 			rResetGame = false;
 			listSection = { 0, 0, 0, 0 };
-			rBirdAcceleration = 0.0f;
-			rBirdVelocity = 0.0f;
-			rBirdPosition = ScreenHeight() / 2.0f;
+			rAcceleration = 0.0f;
+			rVelocity = 0.0f;
+			rPosition = ScreenHeight() / 2.0f;
 			nCrashCount = 0;
 			nAttemptCount++;
 		}
@@ -63,14 +62,11 @@ protected:
 		// Game
 		if (rHasCollided)
 		{
-			// Does nothing until user releases space
-			if (GetKey(olc::Key::SPACE).bReleased)
-				bResetGame = true;
+			bResetGame = true;
 		}
 		else
 		{
-
-			if (GetKey(olc::Key::SPACE).bPressed && rBirdVelocity >= rGravity / 10.0f)
+			if (GetKey(olc::Key::SPACE).bPressed && rVelocity >= rGravity / 10.0f)
 			{
 				rAcceleration = 0.0f;
 				nCrashCount++;
@@ -78,13 +74,13 @@ protected:
 					nMaxCrashCount = nCrashCount;
 			}
 			else
-				rBirdAcceleration += rGravity * fElapsedTime;
+				rAcceleration += rGravity * fElapsedTime;
 
-			if (rBirdAcceleration >= rGravity)
-				rBirdAcceleration = rGravity;
+			if (rAcceleration >= rGravity)
+				rAcceleration = rGravity;
 
-			rBirdVelocity += rBirdAcceleration * fElapsedTime;
-			rBirdPosition += rBirdVelocity * fElapsedTime;
+			rVelocity += rAcceleration * fElapsedTime;
+			rPosition += rVelocity * fElapsedTime;
 			rLevelPosition += 14.0f * 8.0f * fElapsedTime;
 
 			if (rLevelPosition > fSectionWidth)
@@ -131,8 +127,8 @@ protected:
 
 			// Draw rocket
 
-				DrawString(nBirdX, r + 0, "-------\\");
-				DrawString(nBirdX, r + 8, "-------/");
+				DrawString(nRocketX, r + 0, "-------\\");
+				DrawString(nRocketX, r + 8, "-------/");
 			}
 
 			DrawString(8, 8, "Attempt: " + std::to_string(nAttemptCount) + " Score: " + std::to_string(nChrashCount) + " High Score: " + std::to_stCrash));
